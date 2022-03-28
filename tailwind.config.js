@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
   mode: 'jit',
   content: [
@@ -11,6 +13,9 @@ module.exports = {
         primary: '#DC1637',
         secondary: '#1B1B1F',
         notActive: '#7A7A80',
+      },
+      fontFamily: {
+        sans: ['Inter', ...defaultTheme.fontFamily.sans],
       },
     },
   },

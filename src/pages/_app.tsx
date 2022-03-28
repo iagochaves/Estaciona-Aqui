@@ -1,5 +1,6 @@
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import NextNProgress from 'nextjs-progressbar';
 import Layout from '../layout';
@@ -17,6 +18,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 
   return (
     <>
+      <Head>
+        <title>Estaciona Recife</title>
+      </Head>
       <NextNProgress
         color="#DC1637"
         startPosition={0.3}

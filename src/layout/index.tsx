@@ -10,7 +10,7 @@ const Layout: React.FC<AppLayoutProps> = ({ children }) => {
     <div className="flex">
       <SideBar />
 
-      <div className="p-3 w-full">{children}</div>
+      <div className="flex-1">{children}</div>
     </div>
   );
 };

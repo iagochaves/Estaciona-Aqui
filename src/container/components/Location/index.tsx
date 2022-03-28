@@ -1,0 +1,25 @@
+import { LocationEvent } from 'leaflet';
+import { Marker, Popup } from 'react-leaflet';
+import { carLeafletIcon } from '../../../assets/carLeafletIcon';
+
+type LocationProps = {
+  currentLocation: LocationEvent | undefined;
+};
+
+const Location: React.FC<LocationProps> = ({ currentLocation }) => {
+  if (currentLocation) {
+    return (
+      <Marker
+        icon={carLeafletIcon}
+        position={[currentLocation.latlng.lat, currentLocation.latlng.lng]}
+      >
+        <Popup>
+          <p className="font-bold">You&apos;re here!</p>
+        </Popup>
+      </Marker>
+    );
+  }
+  return null;
+};
+
+export default Location;

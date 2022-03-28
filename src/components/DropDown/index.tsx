@@ -52,7 +52,7 @@ const DropDown: React.FC<DropDownProps> = ({
         <Menu.Items
           unmount={!active}
           className={getClassNames(
-            'origin-top-right absolute mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none',
+            'origin-top-right absolute mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10',
             customItemsPositioning ? customItemsPositioning : 'left-0'
           )}
         >

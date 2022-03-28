@@ -1,9 +1,12 @@
+import dynamic from 'next/dynamic';
+
+const Map = dynamic(() => import('../../container/Map'), {
+  loading: () => <p>LOADING MAP...</p>,
+  ssr: false,
+});
+
 const App: React.FC = () => {
-  return (
-    <div>
-      <h1 className="text-3xl font-bold underline mb-4">App page</h1>
-    </div>
-  );
+  return <Map />;
 };
 
 export default App;
