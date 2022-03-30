@@ -7,6 +7,19 @@ import Layout from '../layout';
 import '../styles/global.css';
 import { MENU_TYPES } from '../utils/constants';
 
+if (typeof window !== 'undefined') {
+  require('leaflet/dist/leaflet.css');
+  require('../assets/css/Control.Loading.css');
+  require('../assets/files/Control.Loading.js');
+  require('../assets/css/Control.FullScreen.css');
+  require('../assets/files/Control.FullScreen.js');
+  require('leaflet-spin');
+  require('../../node_modules/spin.js/spin.css');
+  // require('leaflet.markercluster/dist/MarkerCluster.css');
+  // require('leaflet.markercluster/dist/MarkerCluster.Default.css');
+  // require('leaflet.markercluster/dist/leaflet.markercluster.js');
+}
+
 const AppLayout: React.FC = ({ children }) => {
   return <Layout>{children}</Layout>;
 };
