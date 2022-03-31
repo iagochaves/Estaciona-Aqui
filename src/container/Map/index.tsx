@@ -4,14 +4,8 @@ import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { carParkingLeafletIcon } from '../../assets/carParkingLeafletIcon';
 import Modal from '../../components/Modal';
 import { staticTilesEndpoint } from '../../services/apiMapBox';
-import Direction from '../components/Direction';
-import Location from '../components/Location';
-import useCurrentLocation from '../hooks/useCurrentLocation';
-
-type MapHandlerProps = {
-  targetLocation: L.LatLng | undefined;
-  hasFinishedSchedule: boolean;
-};
+import DirectionsPanel from '../components/DirectionsPanel';
+import MapHandler from '../components/MapHandler';
 
 const RECIFE_COORDINATES = [-8.043096, -34.900519] as LatLngExpression;
 const COORDINATES = [
@@ -23,24 +17,6 @@ const southWest = new L.LatLng(-33.750634, -73.982864);
 const northEast = new L.LatLng(5.271805, -29.344376);
 const maxBounds = new L.LatLngBounds(southWest, northEast);
 
-const MapHandler: React.FC<MapHandlerProps> = ({
-  targetLocation,
-  hasFinishedSchedule,
-}) => {
-  const { currentLocation } = useCurrentLocation();
-
-  return (
-    <>
-      <Location currentLocation={currentLocation} />
-      <Direction
-        currentLocation={currentLocation}
-        endLocation={targetLocation}
-        hasFinishedSchedule={hasFinishedSchedule}
-      />
-    </>
-  );
-};
-
 const Map: React.FC = () => {
   const [targetLocation, setTargetLocation] = useState<L.LatLng>();
   const [isOpen, setIsOpen] = useState(false);
@@ -51,7 +27,9 @@ const Map: React.FC = () => {
     setHasFinishedSchedule(true);
   };
   return (
-    <>
+    <div className="relative h-full w-full">
+      <DirectionsPanel />
+
       <MapContainer
         className="h-full w-full z-0"
         center={RECIFE_COORDINATES}
@@ -84,7 +62,7 @@ const Map: React.FC = () => {
         isOpen={isOpen}
         onScheduleConfirmation={onScheduleConfirmation}
       />
-    </>
+    </div>
   );
 };
 

@@ -1,4 +1,5 @@
 import { LocationEvent } from 'leaflet';
+import { memo } from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import { carLeafletIcon } from '../../../assets/carLeafletIcon';
 
@@ -22,4 +23,4 @@ const Location: React.FC<LocationProps> = ({ currentLocation }) => {
   return null;
 };
 
-export default Location;
+export default memo(Location);

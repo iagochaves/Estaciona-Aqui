@@ -1,32 +1,34 @@
-import L, { LocationEvent } from 'leaflet';
+import L from 'leaflet';
 import { useEffect, useState } from 'react';
 import { useMap } from 'react-leaflet';
 import { getDirections } from '../../../services/apiMapBox';
+import useCurrentLocation from '../../hooks/useCurrentLocation';
+import Location from '../Location';
 
-type DirectionProps = {
-  currentLocation: LocationEvent | undefined;
-  endLocation: L.LatLng | undefined;
+type MapHandlerProps = {
+  targetLocation: L.LatLng | undefined;
   hasFinishedSchedule: boolean;
 };
 
-const Direction: React.FC<DirectionProps> = ({
-  currentLocation,
-  endLocation,
+const MapHandler: React.FC<MapHandlerProps> = ({
+  targetLocation,
   hasFinishedSchedule,
 }) => {
+  const { currentLocation } = useCurrentLocation();
   const map = useMap();
   const [, setCurrentPathLayer] = useState<L.GeoJSON>();
+
   useEffect(() => {
     const getMapDirections = async () => {
-      if (currentLocation && endLocation && hasFinishedSchedule) {
+      if (currentLocation && targetLocation && hasFinishedSchedule) {
         (map as any).spin(true);
         const startPoint = [
           currentLocation.latlng.lat,
           currentLocation.latlng.lng,
         ];
         const directions = await getDirections(startPoint, [
-          endLocation.lat,
-          endLocation.lng,
+          targetLocation.lat,
+          targetLocation.lng,
         ]);
         console.log('directions', directions);
 
@@ -57,14 +59,18 @@ const Direction: React.FC<DirectionProps> = ({
           });
 
           (map as any).spin(false);
-          map.fitBounds([startPoint, endLocation] as any);
+          map.fitBounds([startPoint, targetLocation] as any);
         }
       }
     };
     getMapDirections();
-  }, [currentLocation, endLocation, hasFinishedSchedule, map]);
+  }, [currentLocation, hasFinishedSchedule, map, targetLocation]);
 
-  return null;
+  return (
+    <>
+      <Location currentLocation={currentLocation} />
+    </>
+  );
 };
 
-export default Direction;
+export default MapHandler;
