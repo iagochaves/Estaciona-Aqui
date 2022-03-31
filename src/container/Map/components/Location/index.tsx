@@ -1,7 +1,7 @@
 import { LocationEvent } from 'leaflet';
 import { memo } from 'react';
 import { Marker, Popup } from 'react-leaflet';
-import { carLeafletIcon } from '../../../assets/carLeafletIcon';
+import { carLeafletIcon } from '../../../../assets/carLeafletIcon';
 
 type LocationProps = {
   currentLocation: LocationEvent | undefined;

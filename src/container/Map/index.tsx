@@ -4,8 +4,8 @@ import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { carParkingLeafletIcon } from '../../assets/carParkingLeafletIcon';
 import Modal from '../../components/Modal';
 import { staticTilesEndpoint } from '../../services/apiMapBox';
-import DirectionsPanel from '../components/DirectionsPanel';
-import MapHandler from '../components/MapHandler';
+import DirectionsPanel from './components/DirectionsPanel';
+import MapHandler from './components/MapHandler';
 
 const RECIFE_COORDINATES = [-8.043096, -34.900519] as LatLngExpression;
 const COORDINATES = [
@@ -22,13 +22,21 @@ const Map: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [hasFinishedSchedule, setHasFinishedSchedule] = useState(false);
 
+  const onClickParkingLot = (coordinate: L.LatLng) => {
+    setIsOpen(true);
+    setHasFinishedSchedule(false);
+    setTargetLocation(coordinate);
+  };
   const onScheduleConfirmation = () => {
     setIsOpen(false);
     setHasFinishedSchedule(true);
   };
   return (
     <div className="relative h-full w-full">
-      <DirectionsPanel />
+      <DirectionsPanel
+        locations={COORDINATES}
+        onClickParkingLot={onClickParkingLot}
+      />
 
       <MapContainer
         className="h-full w-full z-0"
@@ -39,6 +47,7 @@ const Map: React.FC = () => {
       >
         <TileLayer url={staticTilesEndpoint} />
         <MapHandler
+          locations={COORDINATES}
           targetLocation={targetLocation}
           hasFinishedSchedule={hasFinishedSchedule}
         />
@@ -49,9 +58,7 @@ const Map: React.FC = () => {
             key={index}
             eventHandlers={{
               click: () => {
-                setIsOpen(true);
-                setHasFinishedSchedule(false);
-                setTargetLocation(coordinate);
+                onClickParkingLot(coordinate);
               },
             }}
           ></Marker>

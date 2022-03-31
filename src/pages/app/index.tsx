@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic';
+import { MapProvider } from '../../context/mapContext';
 
 const Map = dynamic(() => import('../../container/Map'), {
   loading: () => <p>LOADING MAP...</p>,
@@ -6,7 +7,11 @@ const Map = dynamic(() => import('../../container/Map'), {
 });
 
 const App: React.FC = () => {
-  return <Map />;
+  return (
+    <MapProvider>
+      <Map />
+    </MapProvider>
+  );
 };
 
 export default App;
