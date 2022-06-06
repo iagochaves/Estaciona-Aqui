@@ -67,7 +67,7 @@ const Map: React.FC = () => {
       <Modal
         setIsOpen={setIsOpen}
         isOpen={isOpen}
-        onScheduleConfirmation={onScheduleConfirmation}
+        onConfirmation={onScheduleConfirmation}
       />
     </div>
   );

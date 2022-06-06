@@ -32,7 +32,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <>
       <Head>
-        <title>Estaciona Recife</title>
+        <title>Estaciona Aqui</title>
       </Head>
       <NextNProgress
         color="#DC1637"
