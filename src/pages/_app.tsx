@@ -6,6 +6,8 @@ import NextNProgress from 'nextjs-progressbar';
 import Layout from '../layout';
 import '../styles/global.css';
 import { MENU_TYPES } from '../utils/constants';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 if (typeof window !== 'undefined') {
   require('leaflet/dist/leaflet.css');
@@ -26,6 +28,7 @@ const AppLayout: React.FC = ({ children }) => {
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const router = useRouter();
+  const queryClient = new QueryClient();
 
   const allMenuRoutes = Object.values(MENU_TYPES).map((menu) => menu.href);
 
@@ -41,15 +44,18 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         height={3}
         showOnShallow={true}
       />
-      <SessionProvider session={session}>
-        {allMenuRoutes.includes(router.asPath) ? (
-          <AppLayout>
+      <QueryClientProvider client={queryClient}>
+        <SessionProvider session={session}>
+          {allMenuRoutes.includes(router.asPath) ? (
+            <AppLayout>
+              <Component {...pageProps} />
+            </AppLayout>
+          ) : (
             <Component {...pageProps} />
-          </AppLayout>
-        ) : (
-          <Component {...pageProps} />
-        )}
-      </SessionProvider>
+          )}
+          <ReactQueryDevtools />
+        </SessionProvider>
+      </QueryClientProvider>
     </>
   );
 }

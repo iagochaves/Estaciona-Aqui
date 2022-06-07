@@ -1,15 +1,29 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from '../../components/Modal';
 import ParkingLotCard from '../../components/ParkingLotCard';
-import { TrashIcon } from '@heroicons/react/outline';
+import { TrashIcon, ViewGridAddIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
-import { MENU_TYPES } from '../../utils/constants';
+import ParkingLotCardSkeleton from '../../components/ParkingLotCard/Skeleton';
+import AddCard from '../../components/ParkingLotCard/AddCard';
+import { useSession } from 'next-auth/react';
+import { ParkingLot, useParkingLots } from '../../hooks/useParkingLots';
 
 const OwnerParkings: React.FC = () => {
-  const [parkingLots, setParkingLots] = useState([1, 4, 5]);
+  const [parkingLots, setParkingLots] = useState<ParkingLot[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [parkingLotSelected, setParkingLotSelected] = useState<number>();
+  const [parkingLotSelected, setParkingLotSelected] = useState<
+    number | string
+  >();
+  const { data: session } = useSession();
+
   const router = useRouter();
+  const { isLoading, data } = useParkingLots();
+
+  useEffect(() => {
+    if (data) {
+      setParkingLots(data.parkingLots);
+    }
+  }, [data]);
 
   const handleCancellation = () => {
     setIsOpen(false);
@@ -18,28 +32,36 @@ const OwnerParkings: React.FC = () => {
   return (
     <>
       <div className="flex space-x-3 overflow-auto">
+        <AddCard />
+
         {parkingLots.length ? (
-          parkingLots.map((parkingLot) => (
-            <ParkingLotCard
-              type="owner"
-              id={parkingLot}
-              onEdit={(id) => {
-                router.push(`scheduled/edit/${id}`);
-                setParkingLotSelected(id);
-              }}
-              onRemove={(id) => {
-                setIsOpen(true);
-                setParkingLotSelected(id);
-              }}
-              key={parkingLot}
-            />
-          ))
+          <>
+            {parkingLots.map((parkingLot) => (
+              <ParkingLotCard
+                totalParkingVacancy={parkingLot.totalParkingSpot}
+                availableParkings={parkingLot.parkingSpotQuantity}
+                address={parkingLot.address}
+                title={parkingLot.name}
+                phone={parkingLot.phone}
+                type="owner"
+                id={parkingLot.id}
+                onEdit={(id) => {
+                  router.push(`scheduled/edit/${id}`);
+                }}
+                onRemove={(id) => {
+                  setIsOpen(true);
+                  setParkingLotSelected(id);
+                }}
+                key={parkingLot.id}
+              />
+            ))}
+          </>
         ) : (
-          <div className="w-full flex items-center justify-center mb-12">
-            <h2 className="text-lg ">
-              Você não possui nenhuma reserva no momento!
-            </h2>
-          </div>
+          <>
+            <ParkingLotCardSkeleton />
+            <ParkingLotCardSkeleton />
+            <ParkingLotCardSkeleton />
+          </>
         )}
       </div>
       <Modal
