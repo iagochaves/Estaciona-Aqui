@@ -13,6 +13,7 @@
     "@heroicons/react": "^1.0.6",
     "axios": "^0.27.2",
     "classnames": "^2.3.1",
+    "dayjs": "^1.11.3",
     "formik": "^2.2.9",
     "leaflet": "^1.7.1",
     "leaflet-spin": "^1.1.2",

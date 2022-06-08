@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { TrashIcon, PencilAltIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
 import AvailableParkingsLabel from '../AvailableParkingsLabel';
+import dayjs from 'dayjs';
 
 type ParkingLotCardProps = {
   type: 'reservation' | 'owner';
@@ -11,12 +12,14 @@ type ParkingLotCardProps = {
   address: string;
   totalParkingVacancy?: number;
   availableParkings?: number;
+  date?: number;
   onRemove: (id: number) => void;
   onEdit?: (id: number) => void;
 };
 
 const ParkingLotCard: React.FC<ParkingLotCardProps> = ({
   address,
+  date,
   id,
   onRemove,
   title,
@@ -47,7 +50,7 @@ const ParkingLotCard: React.FC<ParkingLotCardProps> = ({
             </h1>
             {type === 'reservation' && (
               <div className="text-sm font-semibold text-slate-500">
-                05/06/2022
+                {dayjs(date).format('DD/MM/YYYY')}
               </div>
             )}
             {type === 'owner' && totalParkingVacancy && availableParkings && (
@@ -59,7 +62,9 @@ const ParkingLotCard: React.FC<ParkingLotCardProps> = ({
             <div className="text-ellipsis overflow-hidden whitespace-nowrap text-sm font-medium text-slate-700 mt-2">
               {address}
             </div>
-            <p className="text-sm text-slate-700 mt-2">{`Contato: ${phone}`}</p>
+            {phone && (
+              <p className="text-sm text-slate-700 mt-2">{`Contato: ${phone}`}</p>
+            )}
           </div>
         </div>
         <div className="flex px-6 w-full space-x-3 my-4 text-sm font-medium">

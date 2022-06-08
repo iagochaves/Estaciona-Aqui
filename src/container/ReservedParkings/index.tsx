@@ -62,6 +62,7 @@ const ReservedParkings: React.FC<ReservedParkingsProps> = ({ userEmail }) => {
             <ParkingLotCard
               address={scheduledParkingLot.parking.address}
               id={scheduledParkingLot.id}
+              date={scheduledParkingLot.bookingDate}
               phone={scheduledParkingLot.parking.phone}
               title={scheduledParkingLot.parking.name}
               type="reservation"

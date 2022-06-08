@@ -6,7 +6,7 @@ export type Schedules = {
   id: number;
   email: string;
   parking: ParkingLot;
-  bookingDate: Date;
+  bookingDate: number;
 };
 
 type GetSchedulesResponse = {
@@ -40,6 +40,7 @@ async function createSchedule(
   parkingLotId: number,
 ): Promise<GetScheduleResponse> {
   const { data } = await api.post<Schedules>(`${API_ROUTES.schedules}`, {
+    bookingDate: new Date().toISOString(),
     email: userEmail,
     parking: {
       id: parkingLotId,
