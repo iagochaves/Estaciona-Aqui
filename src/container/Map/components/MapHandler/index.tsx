@@ -28,7 +28,7 @@ const MapHandler: React.FC<MapHandlerProps> = ({
 
   useEffect(() => {
     if (currentLocation) {
-      const MAX_PARKINGS_LOTS_DISPLAY = 5;
+      const MAX_PARKINGS_LOTS_DISPLAY = 4;
       const allDistances = parkingLots.map((parkingLot) => {
         const distanceFromMe = map.distance(
           {

@@ -120,7 +120,6 @@ const ListItem: React.FC<ListItemProps> = ({
   parkingLot,
   onClickParkingLot,
 }) => {
-  console.log('parking', parkingLot);
   return (
     <li className="group pt-4 pb-3 last:pb-0 flex items-center justify-between">
       <div>

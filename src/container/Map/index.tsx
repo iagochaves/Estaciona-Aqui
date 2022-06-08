@@ -4,6 +4,8 @@ import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { carParkingLeafletIcon } from '../../assets/carParkingLeafletIcon';
 import Modal from '../../components/Modal';
 import Spinner from '../../components/Spinner';
+import ErrorToast from '../../components/Toast/ErrorToast';
+import SuccessToast from '../../components/Toast/SuccessToast';
 import { ParkingLot, useParkingLots } from '../../hooks/useParkingLots';
 import { useCreateSchedule } from '../../hooks/useSchedules';
 import { staticTilesEndpoint } from '../../services/apiMapBox';
@@ -24,7 +26,10 @@ const Map: React.FC<MapProps> = ({ userEmail }) => {
   const [parkingLots, setParkingLots] = useState<ParkingLot[]>([]);
   const [selectedParkingLot, setSelectedParkingLot] = useState<ParkingLot>();
   const [isOpen, setIsOpen] = useState(false);
+
   const [hasFinishedSchedule, setHasFinishedSchedule] = useState(false);
+  const [hasScheduleError, setHasScheduleError] = useState(false);
+  const [hasScheduledSucessfully, setScheduledSucessfully] = useState(false);
 
   const { data: parkingLotsData, isLoading: isLoadingParkingLots } =
     useParkingLots();
@@ -38,6 +43,7 @@ const Map: React.FC<MapProps> = ({ userEmail }) => {
   }, [parkingLotsData]);
 
   const onClickParkingLot = (parkingLot: ParkingLot) => {
+    setHasScheduleError(false);
     setIsOpen(true);
     setHasFinishedSchedule(false);
     setSelectedParkingLot(parkingLot);
@@ -46,8 +52,13 @@ const Map: React.FC<MapProps> = ({ userEmail }) => {
     if (selectedParkingLot) {
       mutate(selectedParkingLot.id, {
         onSuccess: () => {
+          setScheduledSucessfully(true);
           setIsOpen(false);
           setHasFinishedSchedule(true);
+        },
+        onError: () => {
+          setIsOpen(false);
+          setHasScheduleError(true);
         },
       });
     }
@@ -103,7 +114,7 @@ const Map: React.FC<MapProps> = ({ userEmail }) => {
         footer={
           <div className="flex-auto flex space-x-4">
             <button
-              disabled={isCreatingSchedule}
+              disabled={isCreatingSchedule || hasScheduleError}
               type="button"
               className="flex disabled:bg-green-300 items-center justify-center h-10 px-6 font-semibold rounded-md bg-green-500 hover:bg-green-600 transform duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 text-white"
               onClick={onScheduleConfirmation}
@@ -127,6 +138,17 @@ const Map: React.FC<MapProps> = ({ userEmail }) => {
         }
         setIsOpen={setIsOpen}
         isOpen={isOpen}
+      />
+
+      <SuccessToast
+        isActive={hasScheduledSucessfully}
+        setIsActive={setScheduledSucessfully}
+        message="Reserva feita com sucesso, siga o caminho."
+      />
+      <ErrorToast
+        isActive={hasScheduleError}
+        setIsActive={setHasScheduleError}
+        message="Erro ao reservar, estacionamento está lotado."
       />
     </div>
   );

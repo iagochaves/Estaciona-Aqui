@@ -53,10 +53,10 @@ const ParkingLotCard: React.FC<ParkingLotCardProps> = ({
                 {dayjs(date).format('DD/MM/YYYY')}
               </div>
             )}
-            {type === 'owner' && totalParkingVacancy && availableParkings && (
+            {type === 'owner' && (
               <AvailableParkingsLabel
-                totalParkingVacancy={totalParkingVacancy}
-                availableParkings={availableParkings}
+                totalParkingVacancy={totalParkingVacancy!}
+                availableParkings={availableParkings!}
               />
             )}
             <div className="text-ellipsis overflow-hidden whitespace-nowrap text-sm font-medium text-slate-700 mt-2">

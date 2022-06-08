@@ -21,6 +21,7 @@ const AvailableParkingsLabel: React.FC<AvailableParkingsLabelProps> = ({
 
   useEffect(() => {
     const availablePercent = (availableParkings / totalParkingVacancy) * 100;
+    if (!availablePercent) return setActiveColors(getColor(0));
     setActiveColors(getColor(availablePercent));
   }, [availableParkings, totalParkingVacancy]);
 
