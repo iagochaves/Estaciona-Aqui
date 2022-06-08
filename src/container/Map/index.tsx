@@ -66,6 +66,7 @@ const Map: React.FC<MapProps> = ({ userEmail }) => {
   return (
     <div className="relative h-full w-full">
       <DirectionsPanel
+        isLoadingParkingLots={isLoadingParkingLots}
         parkingLots={parkingLots}
         onClickParkingLot={onClickParkingLot}
       />

@@ -7,6 +7,7 @@ import { useMapContext } from '../../../../context/mapContext';
 import { ParkingLot } from '../../../../hooks/useParkingLots';
 
 type DirectionsPanelProps = {
+  isLoadingParkingLots: boolean;
   parkingLots: ParkingLot[];
   onClickParkingLot: (parkingLot: ParkingLot) => void;
 };
@@ -24,6 +25,7 @@ interface ListItemProps
   parkingLot: ParkingLot;
 }
 const DirectionsPanel: React.FC<DirectionsPanelProps> = ({
+  isLoadingParkingLots,
   parkingLots,
   onClickParkingLot,
 }) => {
@@ -32,21 +34,23 @@ const DirectionsPanel: React.FC<DirectionsPanelProps> = ({
   const locationList = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const elementStyle = locationList!.current?.style;
-    if (isPanelExpanded) {
-      const maxHeightInPixels = 384;
-      const currentHeight = parkingLots.length * 73;
+    if (!isLoadingParkingLots && parkingLots.length > 0) {
+      const elementStyle = locationList!.current?.style;
+      if (isPanelExpanded) {
+        const maxHeightInPixels = 384;
+        const currentHeight = parkingLots.length * 73;
 
-      if (currentHeight >= maxHeightInPixels) {
-        elementStyle!.maxHeight = `${maxHeightInPixels}px`;
+        if (currentHeight >= maxHeightInPixels) {
+          elementStyle!.maxHeight = `${maxHeightInPixels}px`;
+        }
+
+        elementStyle!.maxHeight = `${currentHeight}px`;
+
+        return;
       }
-
-      elementStyle!.maxHeight = `${currentHeight}px`;
-
-      return;
+      elementStyle!.maxHeight = '0px';
     }
-    elementStyle!.maxHeight = '0px';
-  }, [isPanelExpanded, parkingLots.length]);
+  }, [isLoadingParkingLots, isPanelExpanded, parkingLots, parkingLots.length]);
 
   return (
     <div className="max-w-md w-full absolute top-8 right-10 z-10 px-8 py-5 ring-1 ring-slate-900/5 rounded-lg shadow-lg bg-white">
@@ -64,16 +68,22 @@ const DirectionsPanel: React.FC<DirectionsPanelProps> = ({
         className={classNames(
           'transition-all ease-out duration-300 overflow-hidden',
           {
-            'h-96': !parkingLotsPanel.length,
+            'flex justify-center items-center':
+              !isLoadingParkingLots && !parkingLotsPanel.length,
             'max-h-0': parkingLotsPanel.length,
           },
         )}
         ref={locationList}
       >
-        {!parkingLotsPanel.length && (
+        {isLoadingParkingLots && (
           <div className="flex justify-center items-center h-full">
             <Spinner className="w-10 h-10" />
           </div>
+        )}
+        {!isLoadingParkingLots && !parkingLotsPanel.length && (
+          <p className="pt-3 font-semibold text-base text-slate-600">
+            Nenhum estacionamento encontrado.
+          </p>
         )}
         <ul className="divide-y max-h-96 overflow-y-auto pr-1 divide-slate-200">
           {parkingLotsPanel.map((parkingLot) => (
