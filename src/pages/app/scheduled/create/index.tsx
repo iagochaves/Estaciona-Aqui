@@ -1,10 +1,6 @@
 import { useRouter } from 'next/router';
-import Input from '../../../../components/Input';
-import * as yup from 'yup';
-import { Formik, Form } from 'formik';
+import { Formik } from 'formik';
 import { useState } from 'react';
-import { FeatureProps } from '../../../../services/apiMapBox';
-import AutocompleteInput from '../../../../components/AutocompleteInput';
 import {
   ParkingLotScheme,
   validateFormSchema,
@@ -37,8 +33,8 @@ const CreateParkingLot: React.FC = () => {
   const handleSaveForm = (formData: ParkingLotScheme) => {
     mutate(formData, {
       onSuccess: () => {
-        setHasCreatedParkingLot(true);
         router.back();
+        setHasCreatedParkingLot(true);
       },
       onError: () => {
         setHasCreatedParkingLotError(true);

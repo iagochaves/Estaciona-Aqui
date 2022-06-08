@@ -93,7 +93,7 @@ export const useParkingLots = () => {
 
 export const useParkingLotsByEmail = (email: string) => {
   const { data, error, isLoading } = useQuery<GetParkingLotsResponse>(
-    `parkings-${email}`,
+    ['parkings', email],
     () => getParkingLotsByEmail(email),
   );
 
@@ -143,6 +143,7 @@ export const useDeleteParkingLot = () => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries('parkings');
+        queryClient.invalidateQueries('schedules');
       },
     },
   );

@@ -2,59 +2,73 @@ import L from 'leaflet';
 import { useEffect, useState } from 'react';
 import { useMap } from 'react-leaflet';
 import { useMapContext } from '../../../../context/mapContext';
+import { ParkingLot } from '../../../../hooks/useParkingLots';
 import { getDirections } from '../../../../services/apiMapBox';
 import getDistance from '../../../../utils/getDistance';
 import useCurrentLocation from '../../hooks/useCurrentLocation';
 import Location from '../Location';
 
 type MapHandlerProps = {
-  targetLocation: L.LatLng | undefined;
+  selectedParkingLot: ParkingLot | undefined;
   hasFinishedSchedule: boolean;
-  locations: L.LatLng[];
+  parkingLots: ParkingLot[];
+  isLoading: boolean;
 };
 
 const MapHandler: React.FC<MapHandlerProps> = ({
-  targetLocation,
+  isLoading,
+  selectedParkingLot,
   hasFinishedSchedule,
-  locations,
+  parkingLots,
 }) => {
   const { currentLocation } = useCurrentLocation();
-  const { setParkingLots } = useMapContext();
+  const { setParkingLotsPanel } = useMapContext();
   const map = useMap();
   const [, setCurrentPathLayer] = useState<L.GeoJSON>();
 
   useEffect(() => {
     if (currentLocation) {
-      const parkingLots = locations.map((location, index) => {
+      const parkingLotsData = parkingLots.map((parkingLot, index) => {
         const distanceFromMe = map.distance(
           {
             lat: currentLocation.latlng.lat,
             lng: currentLocation.latlng.lng,
           },
-          location
+          {
+            lat: +parkingLot.latitude,
+            lng: +parkingLot.longitude,
+          },
         );
         return {
-          title: `Estacionamento ${index + 1}`,
-          description: 'Av. Doutor Malaquias 195',
+          title: parkingLot.name,
+          description: parkingLot.address,
           distance: getDistance(distanceFromMe),
-          location,
+          parkingLot,
         };
       });
-      setParkingLots(parkingLots);
+      setParkingLotsPanel(parkingLotsData);
     }
-  }, [currentLocation, locations, map, setParkingLots]);
+  }, [currentLocation, map, parkingLots, setParkingLotsPanel]);
+
+  useEffect(() => {
+    if (isLoading) {
+      (map as any).spin(true);
+      return;
+    }
+    (map as any).spin(false);
+  }, [isLoading, map]);
 
   useEffect(() => {
     const getMapDirections = async () => {
-      if (currentLocation && targetLocation && hasFinishedSchedule) {
+      if (currentLocation && selectedParkingLot && hasFinishedSchedule) {
         (map as any).spin(true);
         const startPoint = [
           currentLocation.latlng.lat,
           currentLocation.latlng.lng,
         ];
         const directions = await getDirections(startPoint, [
-          targetLocation.lat,
-          targetLocation.lng,
+          +selectedParkingLot.latitude,
+          +selectedParkingLot.longitude,
         ]);
 
         if (directions.routes) {
@@ -84,12 +98,15 @@ const MapHandler: React.FC<MapHandlerProps> = ({
           });
 
           (map as any).spin(false);
-          map.fitBounds([startPoint, targetLocation] as any);
+          map.fitBounds([
+            startPoint,
+            [+selectedParkingLot.latitude, +selectedParkingLot.longitude],
+          ] as any);
         }
       }
     };
     getMapDirections();
-  }, [currentLocation, hasFinishedSchedule, map, targetLocation]);
+  }, [currentLocation, hasFinishedSchedule, map, selectedParkingLot]);
 
   return (
     <>

@@ -1,19 +1,20 @@
 import { LatLng, LocationEvent } from 'leaflet';
 import React, { createContext, useContext, useState } from 'react';
+import { ParkingLot } from '../hooks/useParkingLots';
 
 interface MapContextData {
   currentLocation: LocationEvent | undefined;
   setCurrentLocation: (location: LocationEvent) => void;
 
-  parkingLots: ParkingLotsProps[];
-  setParkingLots: (parkingLots: ParkingLotsProps[]) => void;
+  parkingLotsPanel: ParkingLotsProps[];
+  setParkingLotsPanel: (parkingLots: ParkingLotsProps[]) => void;
 }
 
 interface ParkingLotsProps {
   title: string;
   description: string;
   distance: string;
-  location: LatLng;
+  parkingLot: ParkingLot;
 }
 
 const MapContext = createContext<MapContextData>({} as MapContextData);
@@ -22,14 +23,16 @@ const MapProvider: React.FC = ({ children }) => {
   const [currentLocation, setCurrentLocation] = useState<
     LocationEvent | undefined
   >();
-  const [parkingLots, setParkingLots] = useState<ParkingLotsProps[]>([]);
+  const [parkingLotsPanel, setParkingLotsPanel] = useState<ParkingLotsProps[]>(
+    [],
+  );
   return (
     <MapContext.Provider
       value={{
         currentLocation,
         setCurrentLocation,
-        parkingLots,
-        setParkingLots,
+        parkingLotsPanel,
+        setParkingLotsPanel,
       }}
     >
       {children}

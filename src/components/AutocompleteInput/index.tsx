@@ -68,7 +68,9 @@ const AutocompleteInput: React.FC<InputTypes> = ({
         onChange={async (e) => {
           setFieldValue(e.target.value, []);
           const newAddresses = await getLatLongByAddress(e.target.value);
-          setAddresses(newAddresses.features);
+          if (newAddresses) {
+            setAddresses(newAddresses.features);
+          }
         }}
         onSelect={(value, item) => {
           setFieldValue(value, item.geometry.coordinates);

@@ -15,7 +15,7 @@ const Location: React.FC<LocationProps> = ({ currentLocation }) => {
         position={[currentLocation.latlng.lat, currentLocation.latlng.lng]}
       >
         <Popup>
-          <p className="font-bold">You&apos;re here!</p>
+          <p className="font-bold">Você está aqui!</p>
         </Popup>
       </Marker>
     );

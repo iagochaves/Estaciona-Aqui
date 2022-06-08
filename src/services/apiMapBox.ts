@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const ACCESS_TOKEN_MAP_BOX = `access_token=${process.env.NEXT_PUBLIC_ACCESS_TOKEN_MAP_BOX}`;
 const API_MAP_BOX_URL = 'https://api.mapbox.com/';
 
@@ -35,13 +37,18 @@ export async function getDirections(
   return directionsData;
 }
 
-export async function getLatLongByAddress(address: string): Promise<GeoCoding> {
-  const fetchLatLong = await fetch(
+export async function getLatLongByAddress(
+  address: string,
+): Promise<GeoCoding | undefined> {
+  const { data } = await axios.get<GeoCoding>(
     `${API_MAP_BOX_URL}geocoding/v5/mapbox.places/${encodeURI(
       address,
     )}.json?limit=4&types=place,address&${ACCESS_TOKEN_MAP_BOX}`,
   );
 
-  const geoCodingData = await fetchLatLong.json();
-  return geoCodingData;
+  if (data) {
+    return data;
+  }
+
+  return undefined;
 }

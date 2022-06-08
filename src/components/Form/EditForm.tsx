@@ -81,8 +81,8 @@ const EditForm: React.FC<IFormProps> = ({ setFieldValue, values, slug }) => {
               setFieldValue={(value, latLng) => {
                 setFieldValue('address', value);
                 if (latLng.length) {
-                  setFieldValue('latitude', latLng[0]);
-                  setFieldValue('longitude', latLng[1]);
+                  setFieldValue('latitude', latLng[1]);
+                  setFieldValue('longitude', latLng[0]);
                 }
               }}
               label="Endereço"
