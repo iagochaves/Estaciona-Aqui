@@ -39,6 +39,18 @@ async function getParkingLot(
   return { parkingLot: data };
 }
 
+async function getParkingLotsByEmail(
+  email: string,
+): Promise<GetParkingLotsResponse> {
+  const { data } = await api.get<ParkingLot[]>(`${API_ROUTES.parkingLots}`, {
+    params: {
+      ownerEmail: email,
+    },
+  });
+
+  return { parkingLots: data };
+}
+
 async function updateParkingLot(
   parkingLot: ParkingLotScheme,
   id: string,
@@ -62,10 +74,27 @@ async function createParkingLot(
   return { parkingLot: data };
 }
 
+async function deleteParkingLot(parkingLotId: number): Promise<boolean> {
+  const { status } = await api.delete(
+    `${API_ROUTES.parkingLots}/${parkingLotId}`,
+  );
+
+  return status === 204;
+}
+
 export const useParkingLots = () => {
   const { data, error, isLoading } = useQuery<GetParkingLotsResponse>(
     'parkings',
     () => getParkingLots(),
+  );
+
+  return { data, isLoading, error };
+};
+
+export const useParkingLotsByEmail = (email: string) => {
+  const { data, error, isLoading } = useQuery<GetParkingLotsResponse>(
+    `parkings-${email}`,
+    () => getParkingLotsByEmail(email),
   );
 
   return { data, isLoading, error };
@@ -97,6 +126,20 @@ export const useCreateParkingLot = () => {
   const queryClient = useQueryClient();
   const { data, error, isLoading, mutate } = useMutation(
     (parkingLot: ParkingLotScheme) => createParkingLot(parkingLot),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('parkings');
+      },
+    },
+  );
+
+  return { data, isLoading, error, mutate };
+};
+
+export const useDeleteParkingLot = () => {
+  const queryClient = useQueryClient();
+  const { data, error, isLoading, mutate } = useMutation(
+    (parkingLotId: number) => deleteParkingLot(parkingLotId),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('parkings');

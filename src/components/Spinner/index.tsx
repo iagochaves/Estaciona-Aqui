@@ -3,15 +3,20 @@ import { memo } from 'react';
 
 type SpinnerProps = {
   className: string;
+  spinColor?: string;
 };
 
-const Spinner: React.FC<SpinnerProps> = ({ className }) => {
+const Spinner: React.FC<SpinnerProps> = ({
+  className,
+  spinColor = 'fill-blue-600',
+}) => {
   return (
     <svg
       role="status"
       className={classNames(
-        'inline fill-blue-600 text-gray-200 animate-spin',
-        className
+        'inline text-gray-200 animate-spin',
+        className,
+        spinColor,
       )}
       viewBox="0 0 100 101"
       fill="none"

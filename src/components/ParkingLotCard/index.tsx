@@ -5,14 +5,14 @@ import AvailableParkingsLabel from '../AvailableParkingsLabel';
 
 type ParkingLotCardProps = {
   type: 'reservation' | 'owner';
-  id: number | string;
+  id: number;
   title: string;
   phone: string;
   address: string;
   totalParkingVacancy?: number;
   availableParkings?: number;
-  onRemove: (id: number | string) => void;
-  onEdit?: (id: number | string) => void;
+  onRemove: (id: number) => void;
+  onEdit?: (id: number) => void;
 };
 
 const ParkingLotCard: React.FC<ParkingLotCardProps> = ({
@@ -45,9 +45,11 @@ const ParkingLotCard: React.FC<ParkingLotCardProps> = ({
             <h1 className="text-ellipsis overflow-hidden whitespace-nowrap flex-auto text-lg font-semibold text-slate-900">
               {title}
             </h1>
-            {/* <div className="text-sm font-semibold text-slate-500">
-              05/06/2022
-            </div> */}
+            {type === 'reservation' && (
+              <div className="text-sm font-semibold text-slate-500">
+                05/06/2022
+              </div>
+            )}
             {type === 'owner' && totalParkingVacancy && availableParkings && (
               <AvailableParkingsLabel
                 totalParkingVacancy={totalParkingVacancy}

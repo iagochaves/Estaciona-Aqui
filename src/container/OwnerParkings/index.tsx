@@ -1,23 +1,32 @@
 import { useEffect, useState } from 'react';
 import Modal from '../../components/Modal';
 import ParkingLotCard from '../../components/ParkingLotCard';
-import { TrashIcon, ViewGridAddIcon } from '@heroicons/react/outline';
+import { TrashIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
 import ParkingLotCardSkeleton from '../../components/ParkingLotCard/Skeleton';
 import AddCard from '../../components/ParkingLotCard/AddCard';
-import { useSession } from 'next-auth/react';
-import { ParkingLot, useParkingLots } from '../../hooks/useParkingLots';
+import {
+  ParkingLot,
+  useDeleteParkingLot,
+  useParkingLotsByEmail,
+} from '../../hooks/useParkingLots';
+import SuccessToast from '../../components/Toast/SuccessToast';
+import Spinner from '../../components/Spinner';
 
-const OwnerParkings: React.FC = () => {
+type OwnerParkingsProps = {
+  userEmail: string;
+};
+
+const OwnerParkings: React.FC<OwnerParkingsProps> = ({ userEmail }) => {
   const [parkingLots, setParkingLots] = useState<ParkingLot[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [parkingLotSelected, setParkingLotSelected] = useState<
-    number | string
-  >();
-  const { data: session } = useSession();
+  const [parkingLotSelected, setParkingLotSelected] = useState<number>();
+  const [hasRemovedParkingLot, setHasRemovedParkingLot] = useState(false);
 
   const router = useRouter();
-  const { isLoading, data } = useParkingLots();
+  const { data, isLoading: isLoadingParkingLots } =
+    useParkingLotsByEmail(userEmail);
+  const { mutate, isLoading } = useDeleteParkingLot();
 
   useEffect(() => {
     if (data) {
@@ -26,7 +35,14 @@ const OwnerParkings: React.FC = () => {
   }, [data]);
 
   const handleCancellation = () => {
-    setIsOpen(false);
+    if (parkingLotSelected) {
+      mutate(parkingLotSelected, {
+        onSuccess: () => {
+          setHasRemovedParkingLot(true);
+          setIsOpen(false);
+        },
+      });
+    }
   };
 
   return (
@@ -34,7 +50,7 @@ const OwnerParkings: React.FC = () => {
       <div className="flex space-x-3 overflow-auto">
         <AddCard />
 
-        {parkingLots.length ? (
+        {!isLoadingParkingLots ? (
           <>
             {parkingLots.map((parkingLot) => (
               <ParkingLotCard
@@ -67,20 +83,34 @@ const OwnerParkings: React.FC = () => {
       <Modal
         setIsOpen={setIsOpen}
         isOpen={isOpen}
-        title="Cancelar Reserva"
-        content="Tem certeza que deseja cancelar a reserva para Estacionamento X?"
+        title="Remover estacionamento"
+        content={`Tem certeza que deseja remover ${
+          parkingLots?.find(
+            (parkingLot) => parkingLot.id === parkingLotSelected,
+          )?.name
+        } ?`}
         footer={
           <div className="flex-auto flex space-x-4">
             <button
+              disabled={isLoading}
               type="button"
-              className="flex items-center justify-center h-10 px-6 font-semibold rounded-md bg-primary hover:bg-primaryAction transform duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 text-white"
+              className="flex disabled:bg-red-300 items-center justify-center h-10 px-6 font-semibold rounded-md bg-primary hover:bg-primaryAction transform duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 text-white"
               onClick={handleCancellation}
             >
-              Sim, cancelar
-              <TrashIcon
-                className="ml-1 h-5 w-5 stroke-white"
-                aria-hidden="true"
-              />
+              {isLoading ? (
+                <>
+                  <Spinner className="w-5 h-5 mr-3" />
+                  Removendo...
+                </>
+              ) : (
+                <>
+                  Remover
+                  <TrashIcon
+                    className="ml-1 h-5 w-5 stroke-white"
+                    aria-hidden="true"
+                  />
+                </>
+              )}
             </button>
             <button
               className="h-10 px-6 font-semibold rounded-md border border-slate-200 text-slate-900 transform duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2"
@@ -90,6 +120,12 @@ const OwnerParkings: React.FC = () => {
             </button>
           </div>
         }
+      />
+
+      <SuccessToast
+        isActive={hasRemovedParkingLot}
+        setIsActive={setHasRemovedParkingLot}
+        message="Estacionamento removido com sucesso"
       />
     </>
   );

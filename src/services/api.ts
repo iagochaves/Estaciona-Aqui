@@ -9,4 +9,5 @@ export const api = axios.create({
 
 export const API_ROUTES = {
   parkingLots: '/parkingLots',
+  schedules: '/schedules',
 };
