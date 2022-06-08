@@ -18,7 +18,7 @@ async function getSchedulesLotsByEmail(
 ): Promise<GetSchedulesResponse> {
   const { data } = await api.get<Schedules[]>(`${API_ROUTES.schedules}`, {
     params: {
-      ownerEmail: email,
+      email: email,
     },
   });
 
