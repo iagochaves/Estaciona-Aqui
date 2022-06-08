@@ -28,7 +28,8 @@ const MapHandler: React.FC<MapHandlerProps> = ({
 
   useEffect(() => {
     if (currentLocation) {
-      const parkingLotsData = parkingLots.map((parkingLot, index) => {
+      const MAX_PARKINGS_LOTS_DISPLAY = 5;
+      const allDistances = parkingLots.map((parkingLot) => {
         const distanceFromMe = map.distance(
           {
             lat: currentLocation.latlng.lat,
@@ -42,10 +43,19 @@ const MapHandler: React.FC<MapHandlerProps> = ({
         return {
           title: parkingLot.name,
           description: parkingLot.address,
-          distance: getDistance(distanceFromMe),
           parkingLot,
+          distance: distanceFromMe,
         };
       });
+
+      const sortedDistances = allDistances
+        .sort((a, b) => a.distance - b.distance)
+        .slice(0, MAX_PARKINGS_LOTS_DISPLAY);
+      const parkingLotsData = sortedDistances.map((parkingLot) => ({
+        ...parkingLot,
+        distance: getDistance(parkingLot.distance),
+      }));
+
       setParkingLotsPanel(parkingLotsData);
     }
   }, [currentLocation, map, parkingLots, setParkingLotsPanel]);

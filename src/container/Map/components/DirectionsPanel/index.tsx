@@ -1,6 +1,5 @@
 import { ArrowNarrowUpIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
-import L from 'leaflet';
 import { useEffect, useRef, useState } from 'react';
 import Button from '../../../../components/Button';
 import Spinner from '../../../../components/Spinner';
