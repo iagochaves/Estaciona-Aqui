@@ -1,6 +1,6 @@
 
 # Estaciona Aqui App
-This is app was created to smooth the user on parking systems. The parking owner is able to register his parking lot and the user is able to make reservations on in. Besides that, we have build a full customized map that shows the best route the user can get to reach the desired parking lot.
+This is app was created to smooth the user to make reservartions on parking systems. The parking owner is able to register his parking lot and the user is able to make reservations on in. Besides that, we have build a full customized map that shows the best route the user can get to reach the desired parking lot.
 
  This app was built with:
 - [NextJS](https://nextjs.org/)
